@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Taste Graph</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel='stylesheet' type='text/css' href="style.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row content">
+            
+            <div class="col-md-6" id="left">
+                <h2>Page Selection</h2>
+                <div id="hierarchy"></div>
+                <script type="text/javascript" src="tree.js"></script>
+            </div>
+            
+            <div class="col-md-6" id="right">
+                <h2>Tastes</h2>
+                <div id="tastes">
+                    <div id="title"></div>
+                    <div id="legend"></div>
+                    <div id="radio-selection">
+                        <label class="radio-container"> Sort by Size
+                          <input type="radio" checked="checked" name="radio" value="size">
+                          <span class="checkmark"></span>
+                        </label>
+                        <label class="radio-container"> Sort by Score
+                          <input type="radio" name="radio" value="score">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <script type="text/javascript" src="barchart.js"></script>
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+
+</html>

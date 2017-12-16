@@ -1,0 +1,507 @@
+{
+    "id": "Home",
+    "name": "Home Page",
+    "size": 175,
+    "children": [
+        {
+            "id": "A1",
+            "name": "Sports",
+            "size": 95,
+            "score": 0.8,
+            "children": [
+                {
+                    "id": "B1",
+                    "name": "Baseball",
+                    "size": 85,
+                    "score": 0.3,
+                    "children": [
+                        {
+                            "id": "C1",
+                            "name": "Cleveland Indians",
+                            "size": 56,
+                            "score": 0.6,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "C2",
+                                    "name": "Houston Astros",
+                                    "size": 34,
+                                    "score": 0.4,
+                                    "groupSize": 34,
+                                    "groupScore": 0.3
+                                },
+                                {
+                                    "id": "C3",
+                                    "name": "Toronto Blue Jays",
+                                    "size": 65,
+                                    "score": 0.9,
+                                    "groupSize": 55,
+                                    "groupScore": 0.9
+                                },
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 43,
+                                    "groupScore": 0.8
+                                },
+                                {
+                                    "id": "B1",
+                                    "name": "Baseball",
+                                    "size": 85,
+                                    "score": 0.3,
+                                    "groupSize": 32,
+                                    "groupScore": 0.2
+                                },
+                                {
+                                    "id": "C4",
+                                    "name": "Chicago Bulls",
+                                    "size": 31,
+                                    "score": 0.2,
+                                    "groupSize": 10,
+                                    "groupScore": 0.3
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C2",
+                            "name": "Houston Astros",
+                            "size": 34,
+                            "score": 0.4,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "C1",
+                                    "name": "Cleveland Indians",
+                                    "size": 56,
+                                    "score": 0.6,
+                                    "groupSize": 31,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C3",
+                                    "name": "Toronto Blue Jays",
+                                    "size": 65,
+                                    "score": 0.9,
+                                    "groupSize": 25,
+                                    "groupScore": 0.7
+                                },
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 33,
+                                    "groupScore": 0.8
+                                },
+                                {
+                                    "id": "B1",
+                                    "name": "Baseball",
+                                    "size": 85,
+                                    "score": 0.3,
+                                    "groupSize": 32,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C4",
+                                    "name": "Chicago Bulls",
+                                    "size": 31,
+                                    "score": 0.2,
+                                    "groupSize": 10,
+                                    "groupScore": 0.6
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C3",
+                            "name": "Toronto Blue Jays",
+                            "size": 65,
+                            "score": 0.9,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 63,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C1",
+                                    "name": "Cleveland Indians",
+                                    "size": 56,
+                                    "score": 0.6,
+                                    "groupSize": 56,
+                                    "groupScore": 0.8
+                                },
+                                {
+                                    "id": "C2",
+                                    "name": "Houston Astros",
+                                    "size": 34,
+                                    "score": 0.4,
+                                    "groupSize": 24,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C4",
+                                    "name": "Chicago Bulls",
+                                    "size": 31,
+                                    "score": 0.2,
+                                    "groupSize": 31,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C5",
+                                    "name": "Miami Heat",
+                                    "size": 25,
+                                    "score": 0.8,
+                                    "groupSize": 20,
+                                    "groupScore": 0.8
+                                }
+                            ]
+                        }
+                ],
+                    "interests": [
+                        {
+                            "id": "A1",
+                            "name": "Sports",
+                            "size": 95,
+                            "score": 0.8,
+                            "groupSize": 74,
+                            "groupScore": 0.6
+                        },
+                        {
+                            "id": "C1",
+                            "name": "Cleveland Indians",
+                            "size": 56,
+                            "score": 0.6,
+                            "groupSize": 54,
+                            "groupScore": 0.7
+                        },
+                        {
+                            "id": "C2",
+                            "name": "Houston Astros",
+                            "size": 34,
+                            "score": 0.4,
+                            "groupSize": 25,
+                            "groupScore": 0.4
+                        },
+                        {
+                            "id": "C3",
+                            "name": "Toronto Blue Jays",
+                            "size": 65,
+                            "score": 0.9,
+                            "groupSize": 17,
+                            "groupScore": 0.8
+                        },
+                        {
+                            "id": "C4",
+                            "name": "Chicago Bulls",
+                            "size": 31,
+                            "score": 0.2,
+                            "groupSize": 11,
+                            "groupScore": 0.3
+                        }
+                    ]
+                },
+                {
+                    "id": "B2",
+                    "name": "Basketball",
+                    "size": 65,
+                    "score": 0.6,
+                    "children": [
+                        {
+                            "id": "C4",
+                            "name": "Chicago Bulls",
+                            "size": 31,
+                            "score": 0.2,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 30,
+                                    "groupScore": 0.5
+                                },
+                                {
+                                    "id": "B2",
+                                    "name": "Basketball",
+                                    "size": 65,
+                                    "score": 0.6,
+                                    "groupSize": 20,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C5",
+                                    "name": "Miami Heat",
+                                    "size": 25,
+                                    "score": 0.8,
+                                    "groupSize": 24,
+                                    "groupScore": 0.7
+                                },
+                                {
+                                    "id": "C6",
+                                    "name": "Orlando Magic",
+                                    "size": 56,
+                                    "score": 0.1,
+                                    "groupSize": 29,
+                                    "groupScore": 0.2
+                                },
+                                {
+                                    "id": "C7",
+                                    "name": "Toronto Raptors",
+                                    "size": 15,
+                                    "score": 0.5,
+                                    "groupSize": 14,
+                                    "groupScore": 0.8
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C5",
+                            "name": "Miami Heat",
+                            "size": 25,
+                            "score": 0.8,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 25,
+                                    "groupScore": 0.5
+                                },
+                                {
+                                    "id": "B2",
+                                    "name": "Basketball",
+                                    "size": 65,
+                                    "score": 0.6,
+                                    "groupSize": 20,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "B1",
+                                    "name": "Baseball",
+                                    "size": 85,
+                                    "score": 0.3,
+                                    "groupSize": 19,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "C6",
+                                    "name": "Orlando Magic",
+                                    "size": 56,
+                                    "score": 0.1,
+                                    "groupSize": 14,
+                                    "groupScore": 0.3
+                                },
+                                {
+                                    "id": "C7",
+                                    "name": "Toronto Raptors",
+                                    "size": 15,
+                                    "score": 0.5,
+                                    "groupSize": 13,
+                                    "groupScore": 0.8
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C6",
+                            "name": "Orlando Magic",
+                            "size": 56,
+                            "score": 0.1,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 51,
+                                    "groupScore": 0.6
+                                },
+                                {
+                                    "id": "B2",
+                                    "name": "Basketball",
+                                    "size": 65,
+                                    "score": 0.6,
+                                    "groupSize": 33,
+                                    "groupScore": 0.4
+                                },
+                                {
+                                    "id": "B1",
+                                    "name": "Baseball",
+                                    "size": 85,
+                                    "score": 0.3,
+                                    "groupSize": 19,
+                                    "groupScore": 0.5
+                                },
+                                {
+                                    "id": "C3",
+                                    "name": "Toronto Blue Jays",
+                                    "size": 65,
+                                    "score": 0.9,
+                                    "groupSize": 40,
+                                    "groupScore": 0.9
+                                },
+                                {
+                                    "id": "C7",
+                                    "name": "Toronto Raptors",
+                                    "size": 15,
+                                    "score": 0.5,
+                                    "groupSize": 14,
+                                    "groupScore": 0.8
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C7",
+                            "name": "Toronto Raptors",
+                            "size": 15,
+                            "score": 0.5,
+                            "children": [],
+                            "interests": [
+                                {
+                                    "id": "A1",
+                                    "name": "Sports",
+                                    "size": 95,
+                                    "score": 0.8,
+                                    "groupSize": 13,
+                                    "groupScore": 0.1
+                                },
+                                {
+                                    "id": "B2",
+                                    "name": "Basketball",
+                                    "size": 65,
+                                    "score": 0.6,
+                                    "groupSize": 10,
+                                    "groupScore": 0.4
+                                },
+                                {
+                                    "id": "B1",
+                                    "name": "Baseball",
+                                    "size": 85,
+                                    "score": 0.3,
+                                    "groupSize": 10,
+                                    "groupScore": 0.5
+                                },
+                                {
+                                    "id": "C3",
+                                    "name": "Toronto Blue Jays",
+                                    "size": 65,
+                                    "score": 0.9,
+                                    "groupSize": 11,
+                                    "groupScore": 0.9
+                                },
+                                {
+                                    "id": "C5",
+                                    "name": "Miami Heat",
+                                    "size": 25,
+                                    "score": 0.8,
+                                    "groupSize": 6,
+                                    "groupScore": 0.7
+                                }
+                            ]
+                        }
+                    ],
+                    "interests": [
+                        {
+                            "id": "A1",
+                            "name": "Sports",
+                            "size": 95,
+                            "score": 0.8,
+                            "groupSize": 64,
+                            "groupScore": 0.2
+                        },
+                        {
+                            "id": "C4",
+                            "name": "Chicago Bulls",
+                            "size": 31,
+                            "score": 0.2,
+                            "groupSize": 17,
+                            "groupScore": 0.3
+                        },
+                        {
+                            "id": "C5",
+                            "name": "Miami Heat",
+                            "size": 25,
+                            "score": 0.8,
+                            "groupSize": 8,
+                            "groupScore": 0.8
+                        },
+                        {
+                            "id": "C6",
+                            "name": "Orlando Magic",
+                            "size": 56,
+                            "score": 0.1,
+                            "groupSize": 31,
+                            "groupScore": 0.5
+                        },
+                        {
+                            "id": "C7",
+                            "name": "Toronto Raptors",
+                            "size": 15,
+                            "score": 0.5,
+                            "groupSize": 5,
+                            "groupScore": 0.5
+                        }
+                    ]
+                }
+            ],
+            "interests": [
+                {
+                    "id": "B2",
+                    "name": "Basketball",
+                    "size": 65,
+                    "score": 0.6,
+                    "groupSize": 56,
+                    "groupScore": 0.3
+                },
+                {
+                    "id": "C4",
+                    "name": "Chicago Bulls",
+                    "size": 31,
+                    "score": 0.2,
+                    "groupSize": 25,
+                    "groupScore": 0.7
+                },
+                {
+                    "id": "C5",
+                    "name": "Miami Heat",
+                    "size": 25,
+                    "score": 0.8,
+                    "groupSize": 20,
+                    "groupScore": 0.8
+                },
+                {
+                    "id": "C6",
+                    "name": "Orlando Magic",
+                    "size": 56,
+                    "score": 0.1,
+                    "groupSize": 40,
+                    "groupScore": 0.1
+                },
+                {
+                    "id": "C7",
+                    "name": "Toronto Raptors",
+                    "size": 15,
+                    "score": 0.5,
+                    "groupSize": 15,
+                    "groupScore": 0.5
+                }
+            ]
+        },
+        {
+            "id": "A2",
+            "name": "Science",
+            "size": 80,
+            "score": 0.6,
+            "children": []
+        }
+    ]
+}
