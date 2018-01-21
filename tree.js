@@ -1,8 +1,8 @@
 var treeWidth = document.getElementById("hierarchy").offsetWidth,
-    treeHeight = document.getElementById("hierarchy").offsetHeight; 
+    treeHeight = document.getElementById("hierarchy").offsetHeight;
 
 var treeM = [20, 20, 20, 20],
-    i = 0,
+    totalVisitors = 200,
     rectWidth = 100,
     rectHeight = 30,
     currentSelectionId = "Home",
@@ -13,26 +13,27 @@ var tree = d3.layout.tree()
     .size([treeWidth, treeHeight]);
 
 
+
 var lineFunction = d3.svg.line()
     .x(function (d) {
-        return d.x;
+        return d.y;
     })
     .y(function (d) {
-        return d.y;
+        return d.x;
     })
     .interpolate('linear');
 
 var vis = d3.select("#hierarchy").append("svg:svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 "+treeWidth+" "+treeHeight)
+    .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight)
     .append("svg:g")
-    .attr("transform", "translate(" + 0 + "," + 20 + ")");
+    .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
 
 d3.json("tastes.json", function (json) {
 
     root = json;
-    root.x0 = treeWidth;
+    root.x0 = 0;
     root.y0 = 0;
 
     function toggleAll(d) {
@@ -50,28 +51,42 @@ d3.json("tastes.json", function (json) {
 
 function update(sourcePage) {
 
-    var duration = d3.event && d3.event.altKey ? 5000 : 500;
+    var duration = 500;
 
     // Compute the new tree layout.
-    var nodes = tree.nodes(root).reverse();
-    var layersHeight = 100;
+    var nodes = tree.nodes(root);
 
+    var layersWidth = rectWidth * 1.5;
+    var layersHeight = rectHeight * 1.5;
+    var i = 0;
     // Normalize for fixed-depth.
     nodes.forEach(function (d) {
-        d.y = d.depth * layersHeight;
+
+        if (d.depth > sourcePage.depth) {
+            d.x = i * layersHeight;
+            i++;
+        } else {
+            d.x = d.x0;
+        }
+
+        d.y = d.depth * layersWidth;
     });
+
 
     // Update the nodes…
     var node = vis.selectAll("g.node")
         .data(nodes, function (d) {
-            return d.id || (d.id = ++i);
+            return d.id;
         });
+
 
     // Enter any new nodes at the parent's previous position.
     var nodeEnter = node.enter().append("svg:g")
         .attr("class", "node")
         .attr("transform", function (d) {
-            return "translate(" + sourcePage.x0 + "," + sourcePage.y0 + ")";
+            if (d.depth > sourcePage.depth) {
+                return "translate(" + sourcePage.y + "," + sourcePage.x + ")";
+            }
         })
         .on("click", function (d) {
             toggle(d);
@@ -87,11 +102,21 @@ function update(sourcePage) {
         })
         .style("fill", "lightsteelblue");
 
+    nodeEnter.append("svg:rect")
+        .attr("width", function (d) {
+            return (d.size / totalVisitors) * 100
+        })
+        .attr("height", rectHeight)
+        .style("cursor", function (d) {
+            return d._children ? "pointer" : "default";
+        })
+        .style("fill", "steelblue");
+
     nodeEnter.append("rect:text")
-        .attr("x", rectWidth / 2)
+        .attr("x", rectWidth * 0.06)
         .attr("y", rectHeight / 2)
         .attr("dy", ".35em")
-        .attr("text-anchor", "middle")
+        .attr("text-anchor", "left")
         .style("cursor", function (d) {
             return d._children ? "pointer" : "default";
         })
@@ -104,7 +129,7 @@ function update(sourcePage) {
     var nodeUpdate = node.transition()
         .duration(duration)
         .attr("transform", function (d) {
-            return "translate(" + (d.x - rectWidth / 2) + "," + d.y + ")";
+            return "translate(" + d.y + "," + d.x + ")";
         });
 
     nodeUpdate.select("rect")
@@ -119,7 +144,7 @@ function update(sourcePage) {
     var nodeExit = node.exit().transition()
         .duration(duration)
         .attr("transform", function (d) {
-            return "translate(" + sourcePage.x + "," + sourcePage.y + ")";
+            return "translate(" + sourcePage.y + "," + sourcePage.x + ")";
         })
         .remove();
 
@@ -143,39 +168,25 @@ function update(sourcePage) {
         .attr("d", function (d) {
             var lineData = [
                 {
-                    "x": d.source.x0,
-                    "y": d.source.y0
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     },
                 {
-                    "x": d.source.x0,
-                    "y": d.source.y0
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     },
                 {
-                    "x": d.source.x0,
-                    "y": d.source.y0
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
+                    },
+                {
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     }
             ]
             return lineFunction(lineData)
         })
-        .transition()
-        .duration(duration)
-        .attr("d", function (d) {
-            var lineData = [
-                {
-                    "x": d.source.x,
-                    "y": d.source.y
-                    },
-                {
-                    "x": d.source.x,
-                    "y": d.source.y0 + (d.target.y - d.source.y) / 1.5
-                    },
-                {
-                    "x": d.target.x,
-                    "y": d.source.y0 + (d.target.y - d.source.y) / 1.5
-                    }
-            ]
-            return lineFunction(lineData)
-        });
+    console.log(link)
 
     // Transition links to their new position.
     link.transition()
@@ -183,16 +194,20 @@ function update(sourcePage) {
         .attr("d", function (d) {
             var lineData = [
                 {
-                    "x": d.source.x,
-                    "y": d.source.y
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     },
                 {
-                    "x": d.source.x,
-                    "y": d.source.y0 + (d.target.y - d.source.y) / 1.5
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y +rectWidth + layersHeight / 2
                     },
                 {
-                    "x": d.target.x,
-                    "y": d.source.y0 + (d.target.y - d.source.y) / 1.5
+                    "x": d.target.x + rectHeight / 2,
+                    "y": d.source.y +rectWidth + layersHeight / 2
+                    },
+                {
+                    "x": d.target.x + rectHeight / 2,
+                    "y": d.target.y
                     }
             ]
             return lineFunction(lineData)
@@ -204,16 +219,20 @@ function update(sourcePage) {
         .attr("d", function (d) {
             var lineData = [
                 {
-                    "x": d.source.x,
-                    "y": d.source.y
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     },
                 {
-                    "x": d.source.x,
-                    "y": d.source.y0 + (d.target.y - d.source.y) / 1.5
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     },
                 {
-                    "x": d.target.x,
-                    "y": d.source.y0 + (d.target.y - d.source.y) / 1.5
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
+                    },
+                {
+                    "x": d.source.x + rectHeight / 2,
+                    "y": d.source.y + rectWidth
                     }
             ]
             return lineFunction(lineData)
@@ -252,19 +271,19 @@ function toggle(d) {
 }
 
 function pageSelect(d) {
- 
-    if (d.id != currentSelectionId){
-    DrawBars(d);
-    currentSelectionId = d.id;
-    currentPage = d;
-  }
-  if (!d.interests){
-    d3.selectAll('.tick').remove();
-    d3.select('.domain').remove();
-    d3.select('.enter').remove();
-    d3.select('#title').text("");
-    d3.select("#legend").style("visibility","hidden");
-    d3.select("#radio-selection").style("visibility","hidden");
-  }
+
+    if (d.id != currentSelectionId) {
+        DrawBars(d);
+        currentSelectionId = d.id;
+        currentPage = d;
+    }
+    if (!d.interests) {
+        d3.selectAll('.tick').remove();
+        d3.select('.domain').remove();
+        d3.select('.enter').remove();
+        d3.select('#title').text("");
+        d3.select("#legend").style("visibility", "hidden");
+        d3.select("#radio-selection").style("visibility", "hidden");
+    }
 
 }
