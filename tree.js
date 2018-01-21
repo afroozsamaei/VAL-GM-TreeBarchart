@@ -10,8 +10,7 @@ var treeM = [20, 20, 20, 20],
     root;
 
 var tree = d3.layout.tree()
-    .size([treeWidth, treeHeight]);
-
+    //.size([treeWidth, treeHeight]);
 
 
 var lineFunction = d3.svg.line()
@@ -30,11 +29,41 @@ var vis = d3.select("#hierarchy").append("svg:svg")
     .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
 
-d3.json("tastes.json", function (json) {
+var categoriesUrl = "http://34.228.166.70/api/categories/percentage";
 
-    root = json;
-    root.x0 = 0;
-    root.y0 = 0;
+d3.json(categoriesUrl, function (json) {
+
+
+    var dataMap = json.children.reduce(function (map, node) {
+        map[node.name] = node;
+        return map;
+    }, {});
+
+    // create the tree array
+    var treeData = [{
+        name: "Home Page",
+        children: [],
+        size: "1",
+        x0: 0,
+        y0: 0
+    }];
+    
+    json.children.forEach(function (node) {
+        // add to parent
+        var parent = dataMap[node.parent];
+        if (parent) {
+            // create child array if it doesn't exist
+            (parent.children || (parent.children = []))
+            // add node to child array
+            .push(node);
+        } else {
+            // parent is null or missing
+            treeData[0].children.push(node);
+        }
+    });
+
+
+    root = treeData[0];
 
     function toggleAll(d) {
         if (d.children) {
@@ -43,7 +72,7 @@ d3.json("tastes.json", function (json) {
         }
     }
 
-    // Initialize the display to show a few nodes.
+    //Initialize the display to show a few nodes.
     root.children.forEach(toggleAll);
     toggle(root);
     update(root);
@@ -51,14 +80,14 @@ d3.json("tastes.json", function (json) {
 
 function update(sourcePage) {
 
-    var duration = 500;
-
     // Compute the new tree layout.
-    var nodes = tree.nodes(root);
+    var nodes = tree.nodes(root),
+        duration = 500,
+        layersWidth = rectWidth * 2,
+        layersHeight = rectHeight * 1.5,
+        i = 0,
+        idCount = -1;
 
-    var layersWidth = rectWidth * 1.5;
-    var layersHeight = rectHeight * 1.5;
-    var i = 0;
     // Normalize for fixed-depth.
     nodes.forEach(function (d) {
 
@@ -76,7 +105,7 @@ function update(sourcePage) {
     // Update the nodes…
     var node = vis.selectAll("g.node")
         .data(nodes, function (d) {
-            return d.id;
+            return d.name;
         });
 
 
@@ -104,7 +133,7 @@ function update(sourcePage) {
 
     nodeEnter.append("svg:rect")
         .attr("width", function (d) {
-            return (d.size / totalVisitors) * 100
+            return d.size * 100
         })
         .attr("height", rectHeight)
         .style("cursor", function (d) {
@@ -158,7 +187,7 @@ function update(sourcePage) {
     // Update the links…
     var link = vis.selectAll("path.link")
         .data(tree.links(nodes), function (d) {
-            return d.target.id;
+            return d.target.name;
         });
 
 
@@ -186,7 +215,6 @@ function update(sourcePage) {
             ]
             return lineFunction(lineData)
         })
-    console.log(link)
 
     // Transition links to their new position.
     link.transition()
@@ -199,11 +227,11 @@ function update(sourcePage) {
                     },
                 {
                     "x": d.source.x + rectHeight / 2,
-                    "y": d.source.y +rectWidth + layersHeight / 2
+                    "y": d.source.y + rectWidth + layersWidth / 3
                     },
                 {
                     "x": d.target.x + rectHeight / 2,
-                    "y": d.source.y +rectWidth + layersHeight / 2
+                    "y": d.source.y + rectWidth + layersWidth / 3
                     },
                 {
                     "x": d.target.x + rectHeight / 2,
