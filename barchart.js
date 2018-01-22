@@ -1,19 +1,18 @@
-
 var tastesWidth = document.getElementById("tastes").offsetWidth,
     tastesHeight = document.getElementById("tastes").offsetHeight * 0.73;
 
 var sortBy = "size";
 
-var m = [tastesHeight * 0.15, 160, 0, tastesWidth * 0.25], // top right bottom left
-    w = tastesWidth * 0.65,
+var m = [tastesHeight * 0.15, 160, 0, tastesWidth * 0.15], // top right bottom left
+    w = tastesWidth * 0.75,
     h = 660 - m[0] - m[2], // height
     x = d3.scale.linear().range([0, w]),
-    y = 25, // bar height
+    y = 30, // bar height
     z = d3.scale.ordinal().range(["#f8afaf", "#cb9192"]); // bar color
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("top");
+    .orient("top")
 
 d3.select("#title").append("text")
     .text("");
@@ -25,15 +24,15 @@ d3.select("#radio-selection")
     .style("visibility", "hidden");
 
 d3.selectAll(".radio-container input")
-    .on("click",function(){
-     sortBy = this.value;
-     DrawBars(currentPage);
-     UpdateLegend();
-})
+    .on("click", function () {
+        sortBy = this.value;
+        DrawBars(currentPage);
+        UpdateLegend();
+    })
 
 var svg = d3.select("#tastes").append("svg:svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + tastesWidth + " " + tastesHeight)
+    .attr("viewBox", "0 0 " + tastesWidth + " " + tastesHeight * 2)
     .append("svg:g")
     .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
@@ -43,7 +42,8 @@ svg.append("svg:rect")
 
 
 svg.append("svg:g")
-    .attr("class", "x axis");
+    .attr("class", "x axis")
+
 
 svg.append("svg:g")
     .attr("class", "y axis");
@@ -53,35 +53,42 @@ DrawLegend();
 
 function DrawBars(page) {
 
-    d3.select("#title").text("Selected Page: " + page.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}));
+    d3.select("#title").text("Selected Page: " + page.name.replace(/_/g, " ").replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }));
 
     d3.select("#legend").style("visibility", "visible");
     d3.select("#radio-selection").style("visibility", "visible");
-    
-    var tastesURL = "http://34.228.166.70/api/tastes/"+String(page.id);
+
+    var tastesURL = "http://34.228.166.70/api/tastes/" + String(page.id);
+    var allActualSizes = [];
 
     d3.json(tastesURL, function (root) {
-        
+
         //root is the array of tastes
         //Sorting the array of tastes (descending)
-        var sortedRoot = root.sort(function(a, b){return sortBy == "size" ? (b.size-a.size) : (b.score-a.score)});
-        var topTastes = sortedRoot.slice(1,11);
-        
-        topTastes.forEach(function(element){
+        var sortedRoot = root.sort(function (a, b) {
+            return sortBy == "size" ? (b.size - a.size) : (b.score - a.score)
+        });
+        var topTastes = sortedRoot.slice(1, 21);
+
+
+        topTastes.forEach(function (element) {
             var elementName = element.name;
-            element.name = elementName.substring(elementName.lastIndexOf("/")+1);
-            element.actualSize = categories.find(d=>d.name ===element.name).size;
-            element.actualScore = categories.find(d=>d.name ===element.name).score;
+            element.name = elementName.substring(elementName.lastIndexOf("/") + 1);
+            element.actualSize = categories.find(d => d.name === element.name).size;
+            element.actualScore = categories.find(d => d.name === element.name).score;
+            allActualSizes.push(Number(element.actualSize));
         })
-        
-        sortBy == "size" ? x.domain([0, page.size]).nice() : x.domain([0, 1]).nice();
+
+
+        sortBy == "size" ? x.domain([0, Math.max(...allActualSizes)]).nice() : x.domain([0, 1]).nice();
+        console.log(allActualSizes)
         down(page, topTastes, 0);
     });
 
 
-    function down(page,tastes, i) {
-        console.log(page);
-        console.log(tastes)
+    function down(page, tastes, i) {
         //if (!d.interests || this.__transition__) return;
         var duration = d3.event && d3.event.altKey ? 7500 : 750,
             delay = duration / tastes.length;
@@ -92,7 +99,7 @@ function DrawBars(page) {
 
         // Enter the new bars for the clicked-on data.
         // Per above, entering bars are immediately visible.
-        var enter = bar(page,tastes)
+        var enter = bar(page, tastes)
             .attr("transform", stack(i))
             .style("opacity", 1);
 
@@ -100,12 +107,19 @@ function DrawBars(page) {
         enter.select("text").style("fill-opacity", 1e-6);
 
         // Update the x-scale domain.
-        sortBy == "size" ? x.domain([0, d3.max(tastes, function (d) {return d.actualSize;})]).nice() : x.domain([0, 1]).nice()
+        sortBy == "size" ? x.domain([0, Math.max(...allActualSizes)]).nice() : x.domain([0, 1]).nice()
 
         // Update the x-axis.
         svg.selectAll(".x.axis").transition()
             .duration(duration)
-            .call(xAxis);
+            .call(xAxis)
+            .selectAll("text")
+            .attr("y", -15)
+            .attr("x", 3)
+            .attr("dy", ".35em")
+            .attr("transform", function(d){return d == 0 ? "rotate(0)" : "rotate(-45)"})
+            .style("text-anchor", "start")
+            .style("font-size","12px");
 
         // Transition entering bars to their new position.
         var enterTransition = enter.transition()
@@ -153,7 +167,7 @@ function DrawBars(page) {
     }
 
     // Creates a set of bars for the given data node, at the specified index.
-    function bar(page,taste) {
+    function bar(page, taste) {
 
         var bar = svg.insert("svg:g", ".y.axis")
             .attr("class", "enter")
@@ -161,15 +175,6 @@ function DrawBars(page) {
             .selectAll("g")
             .data(taste)
             .enter().append("svg:g")
-
-        bar.append("svg:text")
-            .attr("x", -6)
-            .attr("y", y / 2)
-            .attr("dy", ".35em")
-            .attr("text-anchor", "end")
-            .text(function (d) {
-                return d.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-            });
 
         bar.append("svg:rect")
             .attr("class", "total")
@@ -194,8 +199,21 @@ function DrawBars(page) {
                 return sortBy == "size" ? "translate(0, 0)" : "translate(0," + y / 2 + ")";
             });
 
+        bar.append("rect:text")
+            .attr("x", 6)
+            .attr("y", y / 2)
+            .attr("dy", ".05em")
+            .attr("text-anchor", "start")
+            .style("font-size", "11px")
+            .text(function (d) {
+                return d.name.replace(/_/g, " ").replace(/\w\S*/g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                });
+            });
+
+
         bar.sort(function (a, b) {
-            return sortBy == "size" ? (b.szie - a.size) : (b.score - a.score);
+            return sortBy == "size" ? (b.size - a.size) : (b.score - a.score);
         });
 
         return bar;
@@ -206,11 +224,10 @@ function DrawBars(page) {
         var x0 = 0;
         return function (d) {
             var tx = "translate(" + x0 + "," + y * i * 1.2 + ")";
-            x0 += x(d.size);
+            x0 += sortBy == "size" ? x(d.size) : x(d.score);
             return tx;
         };
     }
-
 }
 
 function DrawLegend() {
@@ -242,7 +259,7 @@ function DrawLegend() {
         .style("fill", "#cb9192")
 
     g1.append("text")
-      .attr("id","legend-text-1")
+        .attr("id", "legend-text-1")
         .text(function () {
             return sortBy == "size" ? "Total Visitors of the Page" : "Score of the Page from All Visitors"
         })
@@ -252,7 +269,7 @@ function DrawLegend() {
         .attr("text-anchor", "end")
 
     g2.append("text")
-      .attr("id","legend-text-2")
+        .attr("id", "legend-text-2")
         .text(function () {
             return sortBy == "size" ? "Visitors from the Selected Group" : "Score of the Page from the Selected Group"
         })
@@ -263,15 +280,15 @@ function DrawLegend() {
 }
 
 
-function UpdateLegend(){
-    
+function UpdateLegend() {
+
     d3.select("#legend-text-1")
-    .text(function () {
+        .text(function () {
             return sortBy == "size" ? "Total Visitors of the Page" : "Score of the Page from All Visitors"
         })
-    
+
     d3.select("#legend-text-2")
-    .text(function () {
+        .text(function () {
             return sortBy == "size" ? "Visitors from the Selected Group" : "Score of the Page from the Selected Group"
         })
 }
