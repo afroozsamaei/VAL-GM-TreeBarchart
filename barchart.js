@@ -1,3 +1,4 @@
+
 var tastesWidth = document.getElementById("tastes").offsetWidth,
     tastesHeight = document.getElementById("tastes").offsetHeight * 0.73;
 
@@ -56,17 +57,34 @@ function DrawBars(page) {
 
     d3.select("#legend").style("visibility", "visible");
     d3.select("#radio-selection").style("visibility", "visible");
+    
+    var tastesURL = "http://34.228.166.70/api/tastes/"+String(page.id);
 
-    d3.json("tastes.json", function (root) {
-        root = page;
-        sortBy == "size" ? x.domain([0, root.size]).nice() : x.domain([0, 1]).nice();
-        down(root, 0);
+    d3.json(tastesURL, function (root) {
+        
+        //root is the array of tastes
+        //Sorting the array of tastes (descending)
+        var sortedRoot = root.sort(function(a, b){return sortBy == "size" ? (b.size-a.size) : (b.score-a.score)});
+        var topTastes = sortedRoot.slice(1,11);
+        
+        topTastes.forEach(function(element){
+            var elementName = element.name;
+            element.name = elementName.substring(elementName.lastIndexOf("/")+1);
+            element.actualSize = categories.find(d=>d.name ===element.name).size;
+            element.actualScore = categories.find(d=>d.name ===element.name).score;
+        })
+        
+        sortBy == "size" ? x.domain([0, page.size]).nice() : x.domain([0, 1]).nice();
+        down(page, topTastes, 0);
     });
 
-    function down(d, i) {
-        if (!d.interests || this.__transition__) return;
+
+    function down(page,tastes, i) {
+        console.log(page);
+        console.log(tastes)
+        //if (!d.interests || this.__transition__) return;
         var duration = d3.event && d3.event.altKey ? 7500 : 750,
-            delay = duration / d.interests.length;
+            delay = duration / tastes.length;
 
         // Mark any currently-displayed bars as exiting.
         var exit = svg.selectAll(".enter").attr("class", "exit");
@@ -74,7 +92,7 @@ function DrawBars(page) {
 
         // Enter the new bars for the clicked-on data.
         // Per above, entering bars are immediately visible.
-        var enter = bar(d)
+        var enter = bar(page,tastes)
             .attr("transform", stack(i))
             .style("opacity", 1);
 
@@ -82,7 +100,7 @@ function DrawBars(page) {
         enter.select("text").style("fill-opacity", 1e-6);
 
         // Update the x-scale domain.
-        sortBy == "size" ? x.domain([0, d3.max(d.interests, function (d) {return d.size;})]).nice() : x.domain([0, 1]).nice()
+        sortBy == "size" ? x.domain([0, d3.max(tastes, function (d) {return d.actualSize;})]).nice() : x.domain([0, 1]).nice()
 
         // Update the x-axis.
         svg.selectAll(".x.axis").transition()
@@ -105,12 +123,12 @@ function DrawBars(page) {
         // Transition entering rects to the new x-scale.
         enterTransition.select(".total")
             .attr("width", function (d) {
-                return sortBy == "size" ? x(d.size) : x(d.score);
+                return sortBy == "size" ? x(d.actualSize) : x(d.actualScore);
             })
 
         enterTransition.select(".group")
             .attr("width", function (d) {
-                return sortBy == "size" ? x(d.groupSize) : x(d.groupScore);
+                return sortBy == "size" ? x(d.size) : x(d.score);
             })
 
 
@@ -122,26 +140,26 @@ function DrawBars(page) {
 
         // Transition exiting bars to the new x-scale.
         exitTransition.selectAll(".total").attr("width", function (d) {
-            return sortBy == "size" ? x(d.size) : x(d.score);
+            return sortBy == "size" ? x(d.actualSize) : x(d.actualScore);
         });
 
         exitTransition.selectAll(".group").attr("width", function (d) {
-            return sortBy == "size" ? x(d.groupSize) : x(d.groupScore);
+            return sortBy == "size" ? x(d.size) : x(d.score);
         });
 
         // Rebind the current node to the background.
-        svg.select(".background").data([d]).transition().duration(duration * 2);
-        d.index = i;
+        svg.select(".background").data([tastes]).transition().duration(duration * 2);
+        tastes.index = i;
     }
 
     // Creates a set of bars for the given data node, at the specified index.
-    function bar(d) {
+    function bar(page,taste) {
 
         var bar = svg.insert("svg:g", ".y.axis")
             .attr("class", "enter")
             .attr("transform", "translate(0,5)")
             .selectAll("g")
-            .data(d.interests)
+            .data(taste)
             .enter().append("svg:g")
 
         bar.append("svg:text")
@@ -150,13 +168,13 @@ function DrawBars(page) {
             .attr("dy", ".35em")
             .attr("text-anchor", "end")
             .text(function (d) {
-                return d.name;
+                return d.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
             });
 
         bar.append("svg:rect")
             .attr("class", "total")
             .attr("width", function (d) {
-                return sortBy == "size" ? x(d.size) : x(d.score);
+                return sortBy == "size" ? x(d.actualSize) : x(d.actualScore);
             })
             .attr("height", function (d) {
                 return sortBy == "size" ? y : y / 2;
@@ -166,7 +184,7 @@ function DrawBars(page) {
         bar.append("svg:rect")
             .attr("class", "group")
             .attr("width", function (d) {
-                return sortBy == "size" ? x(d.groupSize) : x(d.groupScore);
+                return sortBy == "size" ? x(d.size) : x(d.score);
             })
             .attr("height", function (d) {
                 return sortBy == "size" ? y : y / 2;
@@ -177,7 +195,7 @@ function DrawBars(page) {
             });
 
         bar.sort(function (a, b) {
-            return sortBy == "size" ? (b.groupSize - a.groupSize) : (b.groupScore - a.groupScore);
+            return sortBy == "size" ? (b.szie - a.size) : (b.score - a.score);
         });
 
         return bar;
