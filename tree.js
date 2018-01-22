@@ -4,9 +4,12 @@ var treeWidth = document.getElementById("hierarchy").offsetWidth,
 var treeM = [20, 20, 20, 20],
     totalVisitors = 200,
     rectWidth = 100,
+    xScale = d3.scale.linear().domain([0,1218895]).range([0, rectWidth]),
     rectHeight = 30,
     currentSelectionId = "Home",
     currentPage,
+    idCount =0,
+    categories=[],
     root;
 
 var tree = d3.layout.tree()
@@ -29,11 +32,17 @@ var vis = d3.select("#hierarchy").append("svg:svg")
     .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
 
-var categoriesUrl = "http://34.228.166.70/api/categories/percentage";
+var categoriesUrl = "http://34.228.166.70/api/categories/count";
 
 d3.json(categoriesUrl, function (json) {
 
 
+    categories = json.children;
+    json.children.forEach(function(element){
+        element.id =idCount;
+        idCount++;
+    })
+    
     var dataMap = json.children.reduce(function (map, node) {
         map[node.name] = node;
         return map;
@@ -41,9 +50,10 @@ d3.json(categoriesUrl, function (json) {
 
     // create the tree array
     var treeData = [{
-        name: "Home Page",
+        name: "Home",
+        id: "Home",
         children: [],
-        size: "1",
+        size: "1218895",
         x0: 0,
         y0: 0
     }];
@@ -85,8 +95,7 @@ function update(sourcePage) {
         duration = 500,
         layersWidth = rectWidth * 2,
         layersHeight = rectHeight * 1.5,
-        i = 0,
-        idCount = -1;
+        i = 0;
 
     // Normalize for fixed-depth.
     nodes.forEach(function (d) {
@@ -105,9 +114,8 @@ function update(sourcePage) {
     // Update the nodes…
     var node = vis.selectAll("g.node")
         .data(nodes, function (d) {
-            return d.name;
+             return d.id || (d.id = ++idCount); 
         });
-
 
     // Enter any new nodes at the parent's previous position.
     var nodeEnter = node.enter().append("svg:g")
@@ -133,7 +141,7 @@ function update(sourcePage) {
 
     nodeEnter.append("svg:rect")
         .attr("width", function (d) {
-            return d.size * 100
+            return xScale(d.size)
         })
         .attr("height", rectHeight)
         .style("cursor", function (d) {
@@ -150,7 +158,8 @@ function update(sourcePage) {
             return d._children ? "pointer" : "default";
         })
         .text(function (d) {
-            return d.name;
+      
+            return d.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})
         })
         .style("fill-opacity", 1e-6);
 
@@ -187,7 +196,7 @@ function update(sourcePage) {
     // Update the links…
     var link = vis.selectAll("path.link")
         .data(tree.links(nodes), function (d) {
-            return d.target.name;
+            return d.target.id;
         });
 
 
@@ -305,13 +314,15 @@ function pageSelect(d) {
         currentSelectionId = d.id;
         currentPage = d;
     }
-    if (!d.interests) {
-        d3.selectAll('.tick').remove();
-        d3.select('.domain').remove();
-        d3.select('.enter').remove();
-        d3.select('#title').text("");
-        d3.select("#legend").style("visibility", "hidden");
-        d3.select("#radio-selection").style("visibility", "hidden");
-    }
+    
+ 
+//    if (!d.interests) {
+//        d3.selectAll('.tick').remove();
+//        d3.select('.domain').remove();
+//        d3.select('.enter').remove();
+//        d3.select('#title').text("");
+//        d3.select("#legend").style("visibility", "hidden");
+//        d3.select("#radio-selection").style("visibility", "hidden");
+//    }
 
 }
