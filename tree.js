@@ -25,7 +25,7 @@ var lineFunction = d3.svg.line()
 
 var vis = d3.select("#hierarchy").append("svg:svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight*2)
+    .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight*3)
     .append("svg:g")
     .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
@@ -139,6 +139,7 @@ function update(sourcePage) {
     nodeEnter.append("svg:rect")
         .attr("width", rectWidth)
         .attr("height", rectHeight)
+        .attr("id", function(d){return d.id})
         .style("cursor", function (d) {
             return d._children ? "pointer" : "default";
         })
@@ -314,20 +315,14 @@ function toggle(d) {
 
 function pageSelect(d) {
 
+    d3.selectAll("rect").style("stroke","")
+    document.getElementById(d.id).style.strokeWidth = 4;
+    document.getElementById(d.id).style.stroke = "steelblue";
+
     if (d.id != currentSelectionId) {
         DrawBars(d);
         currentSelectionId = d.id;
         currentPage = d;
     }
-    
- 
-//    if (!d.interests) {
-//        d3.selectAll('.tick').remove();
-//        d3.select('.domain').remove();
-//        d3.select('.enter').remove();
-//        d3.select('#title').text("");
-//        d3.select("#legend").style("visibility", "hidden");
-//        d3.select("#radio-selection").style("visibility", "hidden");
-//    }
 
 }
