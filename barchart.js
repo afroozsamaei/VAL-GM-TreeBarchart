@@ -53,7 +53,7 @@ DrawLegend();
 
 function DrawBars(page) {
 
-    d3.select("#title").text("Selected Page: " + page.name);
+    d3.select("#title").text("Selected Page: " + page.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}));
 
     d3.select("#legend").style("visibility", "visible");
     d3.select("#radio-selection").style("visibility", "visible");
