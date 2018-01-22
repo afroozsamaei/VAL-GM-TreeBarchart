@@ -2,13 +2,11 @@ var treeWidth = document.getElementById("hierarchy").offsetWidth,
     treeHeight = document.getElementById("hierarchy").offsetHeight;
 
 var treeM = [20, 20, 20, 20],
-    totalVisitors = 200,
-    rectWidth = 100,
-    xScale = d3.scale.linear().domain([0,1218895]).range([0, rectWidth]),
+    rectWidth = 150,
+    xScale = d3.scale.linear().range([0, rectWidth]),
     rectHeight = 30,
     currentSelectionId = "Home",
     currentPage,
-    idCount =0,
     categories=[],
     root;
 
@@ -27,7 +25,7 @@ var lineFunction = d3.svg.line()
 
 var vis = d3.select("#hierarchy").append("svg:svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight)
+    .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight*2)
     .append("svg:g")
     .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
@@ -38,25 +36,32 @@ d3.json(categoriesUrl, function (json) {
 
 
     categories = json.children;
-    json.children.forEach(function(element){
-        element.id =idCount;
-        idCount++;
-    })
     
-    var dataMap = json.children.reduce(function (map, node) {
+    for (var i = 0; i<categories.length; i++){
+        categories[i].id = i;
+        
+    }
+
+    
+    var dataMap = categories.reduce(function (map, node) {
         map[node.name] = node;
         return map;
     }, {});
+    
+    var categoriesSizes = [];
+    categories.forEach(function(element){categoriesSizes.push(Number(element.size))})
+    xScale.domain([0, Math.max(... categoriesSizes)]);
 
     // create the tree array
     var treeData = [{
         name: "Home",
         id: "Home",
         children: [],
-        size: "1218895",
+        size: Math.max(... categoriesSizes),
         x0: 0,
         y0: 0
     }];
+    
     
     json.children.forEach(function (node) {
         // add to parent
@@ -93,7 +98,7 @@ function update(sourcePage) {
     // Compute the new tree layout.
     var nodes = tree.nodes(root),
         duration = 500,
-        layersWidth = rectWidth * 2,
+        layersWidth = rectWidth * 1.5,
         layersHeight = rectHeight * 1.5,
         i = 0;
 
@@ -114,7 +119,7 @@ function update(sourcePage) {
     // Update the nodes…
     var node = vis.selectAll("g.node")
         .data(nodes, function (d) {
-             return d.id || (d.id = ++idCount); 
+             return d.id; 
         });
 
     // Enter any new nodes at the parent's previous position.
@@ -150,7 +155,7 @@ function update(sourcePage) {
         .style("fill", "steelblue");
 
     nodeEnter.append("rect:text")
-        .attr("x", rectWidth * 0.06)
+        .attr("x", rectWidth * 0.05)
         .attr("y", rectHeight / 2)
         .attr("dy", ".35em")
         .attr("text-anchor", "left")
@@ -159,7 +164,7 @@ function update(sourcePage) {
         })
         .text(function (d) {
       
-            return d.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})
+            return d.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
         })
         .style("fill-opacity", 1e-6);
 
@@ -236,11 +241,11 @@ function update(sourcePage) {
                     },
                 {
                     "x": d.source.x + rectHeight / 2,
-                    "y": d.source.y + rectWidth + layersWidth / 3
+                    "y": d.source.y + rectWidth + layersWidth / 4
                     },
                 {
                     "x": d.target.x + rectHeight / 2,
-                    "y": d.source.y + rectWidth + layersWidth / 3
+                    "y": d.source.y + rectWidth + layersWidth / 4
                     },
                 {
                     "x": d.target.x + rectHeight / 2,
