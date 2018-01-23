@@ -3,7 +3,7 @@ var tastesWidth = document.getElementById("tastes").offsetWidth,
 
 var sortBy = "size";
 
-var m = [tastesHeight * 0.15, 160, 0, tastesWidth * 0.15], // top right bottom left
+var m = [tastesHeight * 0.15, 160, 0, tastesWidth * 0.1], // top right bottom left
     w = tastesWidth * 0.75,
     h = 660 - m[0] - m[2], // height
     x = d3.scale.linear().range([0, w]),
@@ -83,7 +83,6 @@ function DrawBars(page) {
 
 
         sortBy == "size" ? x.domain([0, Math.max(...allActualSizes)]).nice() : x.domain([0, 1]).nice();
-        console.log(allActualSizes)
         down(page, topTastes, 0);
     });
 
@@ -117,7 +116,7 @@ function DrawBars(page) {
             .attr("y", -15)
             .attr("x", 3)
             .attr("dy", ".35em")
-            .attr("transform", function(d){return d == 0 ? "rotate(0)" : "rotate(-45)"})
+            .attr("transform", function(d){if (sortBy == "size"){return d == 0 ? "rotate(0)" : "rotate(-45)"}})
             .style("text-anchor", "start")
             .style("font-size","12px");
 
