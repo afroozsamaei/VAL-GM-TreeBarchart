@@ -176,7 +176,8 @@ function update(sourcePage) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
         })
-        .style("fill-opacity", 1e-6);
+        .style("fill-opacity", 1e-6)
+        .style("font-size",function(d){return d.name.length > 25 ? "9px" : "11px"});
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
