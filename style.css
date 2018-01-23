@@ -47,8 +47,10 @@ body {
     width: 100%;
     height: 85%;
     vertical-align: top;
-/*    overflow: auto;*/
+    overflow: auto !important;
+    
 }
+
 
 
 #left, #right {
