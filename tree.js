@@ -25,10 +25,10 @@ var lineFunction = d3.svg.line()
 
 var vis = d3.select("#hierarchy").append("svg:svg")
     .attr("id", "hierarchy-svg")
-    .attr("preserveAspectRatio", "xMinYMin meet")
-   .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight * 5)
-//.attr("height",treeHeight*6)
-//.attr("width",treeWidth*3)
+//    .attr("preserveAspectRatio", "xMinYMin meet")
+//   .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight * 5)
+    .attr("height",treeHeight*6)
+    .attr("width",treeWidth*3)
     .append("svg:g")
     .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
