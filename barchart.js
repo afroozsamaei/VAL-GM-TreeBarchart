@@ -232,7 +232,7 @@ function DrawBars(page) {
 function DrawLegend() {
 
     var legendWidth = tastesWidth,
-        legendHeight = tastesHeight * 0.2;
+        legendHeight = tastesHeight * 0.25;
 
     var legend = d3.select("#legend")
         .append("svg")
