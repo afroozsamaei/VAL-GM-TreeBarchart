@@ -7,11 +7,11 @@ var treeM = [20, 20, 20, 20],
     rectHeight = 30,
     currentSelectionId = "Home",
     currentPage,
-    categories=[],
+    categories = [],
     root;
 
 var tree = d3.layout.tree()
-    //.size([treeWidth, treeHeight]);
+//.size([treeWidth, treeHeight]);
 
 
 var lineFunction = d3.svg.line()
@@ -24,8 +24,11 @@ var lineFunction = d3.svg.line()
     .interpolate('linear');
 
 var vis = d3.select("#hierarchy").append("svg:svg")
+    .attr("id", "hierarchy-svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight*3)
+   .attr("viewBox", "0 0 " + treeWidth + " " + treeHeight * 5)
+//.attr("height",treeHeight*6)
+//.attr("width",treeWidth*3)
     .append("svg:g")
     .attr("transform", "translate(" + 20 + "," + 20 + ")");
 
@@ -36,33 +39,35 @@ d3.json(categoriesUrl, function (json) {
 
 
     categories = json.children;
-    
-    for (var i = 0; i<categories.length; i++){
+
+    for (var i = 0; i < categories.length; i++) {
         categories[i].id = i;
-        
+
     }
 
-    
+
     var dataMap = categories.reduce(function (map, node) {
         map[node.name] = node;
         return map;
     }, {});
-    
+
     var categoriesSizes = [];
-    categories.forEach(function(element){categoriesSizes.push(Number(element.size))})
-    xScale.domain([0, Math.max(... categoriesSizes)]);
+    categories.forEach(function (element) {
+        categoriesSizes.push(Number(element.size))
+    })
+    xScale.domain([0, Math.max(...categoriesSizes)]);
 
     // create the tree array
     var treeData = [{
         name: "Home",
         id: "Home",
         children: [],
-        size: Math.max(... categoriesSizes),
+        size: Math.max(...categoriesSizes),
         x0: 0,
         y0: 0
     }];
-    
-    
+
+
     json.children.forEach(function (node) {
         // add to parent
         var parent = dataMap[node.parent];
@@ -119,7 +124,7 @@ function update(sourcePage) {
     // Update the nodes…
     var node = vis.selectAll("g.node")
         .data(nodes, function (d) {
-             return d.id; 
+            return d.id;
         });
 
     // Enter any new nodes at the parent's previous position.
@@ -139,7 +144,9 @@ function update(sourcePage) {
     nodeEnter.append("svg:rect")
         .attr("width", rectWidth)
         .attr("height", rectHeight)
-        .attr("id", function(d){return d.id})
+        .attr("id", function (d) {
+            return d.id
+        })
         .style("cursor", function (d) {
             return d._children ? "pointer" : "default";
         })
@@ -164,8 +171,10 @@ function update(sourcePage) {
             return d._children ? "pointer" : "default";
         })
         .text(function (d) {
-      
-            return d.name.replace(/_/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+
+            return d.name.replace(/_/g, " ").replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
         })
         .style("fill-opacity", 1e-6);
 
@@ -287,6 +296,8 @@ function update(sourcePage) {
         d.x0 = d.x;
         d.y0 = d.y;
     });
+
+    //changeSvgSize();
 }
 
 // Toggle children.
@@ -313,9 +324,18 @@ function toggle(d) {
 
 }
 
+function changeSvgSize() {
+
+    var newWidth = document.getElementById("hierarchy-svg").firstChild.getBoundingClientRect().width;
+    var newHeight = document.getElementById("hierarchy-svg").firstChild.getBoundingClientRect().height;
+    d3.select("#hierarchy-svg")
+        .attr("width", newWidth)
+        .attr("height", newHeight)
+}
+
 function pageSelect(d) {
 
-    d3.selectAll("rect").style("stroke","")
+    d3.selectAll("rect").style("stroke", "")
     document.getElementById(d.id).style.strokeWidth = 4;
     document.getElementById(d.id).style.stroke = "steelblue";
 
